@@ -11,6 +11,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import {
   getAuth,
+  setPersistence,
+  browserSessionPersistence,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
@@ -32,6 +34,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const messagesRef = collection(db, "messages");
+
+// 🧠 Set session-only persistence
+setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    console.log("✅ Session persistence set");
+  })
+  .catch((error) => {
+    console.error("⚠️ Persistence setup failed:", error);
+  });
 
 // 📦 DOM
 const loginContainer = document.getElementById("login-container");
@@ -145,7 +156,6 @@ input.addEventListener("keydown", (e) => {
     sendBtn.click();
   }
 });
-
 
 // 🔄 Load messages for a specific group
 let unsubscribe = null;
