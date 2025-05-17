@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+
+</head>
+<body>
+    <header>
+      
+
+        <menu>
+            <li><a class="playfairLogo" href="">στοά</a></li>
+            <li><a class="playFair" href="#Works">Works</a></li>
+            <li><a class="playFair" href="#About">About</a></li>
+            <li><a class="playFair" href="" target="_blank"> <ion-icon name="logo-instagram"></ion-icon></a></li>
+            <li><a class="playFair" href=""><ion-icon name="mail-outline"></ion-icon></a></li>
+            <button class="playFair" id="toggle-login">+-+</button>
+        </menu>
+    </header>
+
+    
+    
+    
+<div class="container">
+
+    <h1 id="Works" class="title playFair">Works</h1>
+
+    <div class="image-container">
+        <img src="./img/bailey-zindel-NRQV-hBF10M-unsplash.jpg" alt="">
+        <img src="./img/damiano-baschiera-d4feocYfzAM-unsplash.jpg" alt="">
+        <img src="./img/daniel-malikyar-F1leFzugQfM-unsplash.jpg" alt="">
+        <img src="./img/daniela-kokina-hOhlYhAiizc-unsplash.jpg" alt="">
+        <img src="./img/dawid-zawila--G3rw6Y02D0-unsplash.jpg" alt="">
+        <img src="./img/johannes-andersson-UCd78vfC8vU-unsplash (2).jpg" alt="">
+        <img src="./img/johannes-plenio-RwHv7LgeC7s-unsplash.jpg" alt="">
+        <img src="./img/shifaaz-shamoon-sLAk1guBG90-unsplash.jpg" alt="">
+        <img src="./img/v2osk-1Z2niiBPg5A-unsplash.jpg" alt="">
+        
+    </div>
+   
+    <div class="about playFair"><h3>about</h3>
+      
+        <p id="About">Multidisciplinary.</p></div>
+        <div id="login-container">
+          <input id="email" type="email" placeholder="Email">
+          <input id="password" type="password" placeholder="Password">
+          <button id="login-btn">Login</button>
+        </div>    
+        <div id="chat-container" style="display: none;">
+          <div id="chat-box"></div>
+          <select id="group-select"></select>
+          <textarea id="message-input" rows="2" placeholder="Type a message..." style="resize: none;"></textarea>
+
+          
+          <button id="send-btn">Send</button>
+          <button id="logout-btn">Logout</button>
+          
+        </div>
+        
+</div>
+
+
+<script type="module" src="chat.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgjm2eZh4BWBi4_afbgVng0SCykEorIWY",
+      authDomain: "test-2f3f3.firebaseapp.com",
+      projectId: "test-2f3f3",
+      storageBucket: "test-2f3f3.firebasestorage.app",
+      messagingSenderId: "388801289465",
+      appId: "1:388801289465:web:1c0af628c43adc68111628",
+      measurementId: "G-3L4PZ3FP22"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+  </script>
+
+<script type="module">
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  
+    const db = getFirestore(app);
+    const messagesRef = collection(db, "messages");
+  
+    const chatBox = document.getElementById("chat-box");
+    const input = document.getElementById("message-input");
+    const sendBtn = document.getElementById("send-btn");
+  
+    // Send a message
+    sendBtn.addEventListener("click", async () => {
+      const text = input.value.trim();
+      if (!text) return;
+      await addDoc(messagesRef, {
+        text,
+        createdAt: Date.now()
+      });
+      input.value = "";
+    });
+  
+    // Listen for new messages
+    const q = query(messagesRef, orderBy("createdAt"));
+    onSnapshot(q, (snapshot) => {
+      chatBox.innerHTML = ""; // Clear before re-render
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const div = document.createElement("div");
+        div.textContent = msg.text;
+        chatBox.appendChild(div);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
+  
+
+</body>
+</html>
